@@ -3,10 +3,12 @@ package edu.upc.dsa;
 import edu.upc.dsa.models.GameObject;
 import edu.upc.dsa.models.Objects;
 import edu.upc.dsa.models.User;
+// Importa la nueva clase Group que debe estar en tu paquete de modelos del Backend
+import edu.upc.dsa.models.dto.Group;
 
 import java.util.List;
 
-public interface GameManager {
+public interface    GameManager {
 
     public User LogIn(String username, String password) throws Exception;
 
@@ -29,4 +31,9 @@ public interface GameManager {
     public int getNumberOfUsersRegistered();
 
     public User getUser(String username);
+
+
+    List<Group> getAllGroups();
+
+    void joinGroup(String username, String groupId) throws Exception;
 }

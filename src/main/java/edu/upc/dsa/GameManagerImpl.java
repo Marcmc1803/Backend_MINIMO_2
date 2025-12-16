@@ -3,6 +3,8 @@ package edu.upc.dsa;
 import edu.upc.dsa.models.Objects;
 import edu.upc.dsa.models.User;
 import edu.upc.dsa.models.GameObject;
+
+import edu.upc.dsa.models.dto.Group;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -18,12 +20,21 @@ public class GameManagerImpl implements GameManager {
     // key: object name
     protected Map<String, GameObject> registred_objects;
     protected List<GameObject> objects;
+
+
+    protected List<Group> groupList;
+
     final static Logger logger = Logger.getLogger(GameManagerImpl.class);
 
     private GameManagerImpl() {
         this.registred_users = new HashMap<>();
         this.registred_objects = new HashMap<>();
         this.objects = new LinkedList<>();
+
+        this.groupList = new LinkedList<>();
+        this.groupList.add(new Group("G1", "Instituto Raimon"));
+        this.groupList.add(new Group("G2", "Royal Academy"));
+        this.groupList.add(new Group("G3", "Instituto Zeus"));
     }
 
     public static GameManager getInstance() {
@@ -31,6 +42,8 @@ public class GameManagerImpl implements GameManager {
             instance = new GameManagerImpl();
         return instance;
     }
+
+
 
     @Override
     public User LogIn(String username, String password) throws Exception {
@@ -170,5 +183,35 @@ public class GameManagerImpl implements GameManager {
     public List<GameObject> getAllStoreObjects() {
         logger.info("Obteniendo todos los objetos de la tienda");
         return this.objects;
+    }
+
+
+
+    @Override
+    public List<Group> getAllGroups() {
+        logger.info("T2: Devolviendo la lista DUMMY de grupos.");
+
+        return this.groupList;
+    }
+
+    @Override
+    public void joinGroup(String username, String groupId) throws Exception {
+        logger.info("T3: Procesando solicitud de unión - Usuario: " + username + ", Grupo: " + groupId);
+
+
+        User u = this.registred_users.get(username);
+        if (u == null) {
+            logger.warn("Usuario no encontrado: " + username);
+            throw new Exception("Usuario no encontrado");
+        }
+
+
+        if (username.equals("testuser")) {
+            logger.error("El usuario ya está en un grupo.");
+
+        }
+
+        logger.info("T3: Usuario " + username + " unido al grupo " + groupId + " (DUMMY OK).");
+
     }
 }

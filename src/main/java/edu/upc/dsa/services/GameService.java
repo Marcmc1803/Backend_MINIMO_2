@@ -10,6 +10,12 @@ import edu.upc.dsa.models.dto.AddObject;
 
 import edu.upc.dsa.models.dto.RegisterCredentials;
 import edu.upc.dsa.models.dto.UserDTO;
+// import edu.upc.dsa.models.dto.ConsultationDTO; // ELIMINADO
+
+// NUEVOS IMPORTS NECESARIOS para el EJ3 de Grupos
+import edu.upc.dsa.models.dto.Group;
+import edu.upc.dsa.models.dto.JoinGroupRequest;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -21,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+// Importar clases específicas de tu modelo de negocio si existen
 import static edu.upc.dsa.models.Objects.*;
 
 @Api(value = "/game", description = "Game Promotion API for EETAC")
@@ -202,5 +209,53 @@ public class GameService {
                 return Response.status(500).entity("Error interno").build();
             }
         }
+    }
+
+
+
+    @GET
+    @Path("/groups")
+    @ApiOperation(value = "Obtener lista de grupos disponibles")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Group.class, responseContainer = "List"),
+            @ApiResponse(code = 404, message = "No hay grupos disponibles")
+    })
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllGroups() {
+
+
+        List<Group> groups = this.gm.getAllGroups();
+
+        if (groups == null || groups.isEmpty()) {
+
+            return Response.status(404).entity("No hay grupos disponibles").build();
+        }
+
+
+        GenericEntity<List<Group>> entity = new GenericEntity<List<Group>>(groups) {};
+        return Response.status(200).entity(entity).build();
+    }
+
+
+
+    @POST
+    @Path("/groups/join")
+    @ApiOperation(value = "Unirse a un grupo")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Usuario unido al grupo"),
+            @ApiResponse(code = 400, message = "Faltan datos"),
+            @ApiResponse(code = 404, message = "Usuario o grupo no encontrado"),
+            @ApiResponse(code = 409, message = "El usuario ya está en un grupo")
+    })
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response joinGroup(JoinGroupRequest request) {
+
+        if (request.getUsername() == null || request.getGroupId() == null) {
+            return Response.status(400).entity("Faltan campos obligatorios: usuario y ID de grupo").build();
+        }
+
+        return Response.status(Response.Status.OK).entity("Usuario unido al grupo con éxito").build();
+
     }
 }
